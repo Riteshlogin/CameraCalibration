@@ -1,6 +1,6 @@
 import numpy as np
 
-# Linear camera calibration, using parts of the approach from 
+# Linear camera calibration, using parts of the approach from page 13 of  
 # https://people.cs.rutgers.edu/~elgammal/classes/cs534/lectures/CameraCalibration-book-chapter.pdf
 # and the matrix equation from 
 # https://homepages.inf.ed.ac.uk/rbf/CVonline/LOCAL_COPIES/OWENS/LECT9/node4.html
@@ -20,11 +20,6 @@ BC = C - B
 
 # Find the normal to the plane defined by the points A, B, and C
 ACxBC = np.cross(AC, BC)
-
-# Find the expected result of the equation Fx + Gy + Hz for any point on the plane
-# (F, G, and H are the coefficients of ACxBC)
-
-Sum = np.dot(ACxBC, A)
 
 # The coordinates from the text file all have a "1" appended at the end, 
 # so a 0 is appended to the cross product so that the upcoming matrix multiplication 
@@ -52,7 +47,6 @@ for i in range(WorldCoords.shape[0]):
         G[i,4:8] = WorldCoords[i,:]
         G[i,8:12] = np.multiply(WorldCoords[i,:], -PixelCoords[i,1])
 
-
 G_transpose_G = np.matmul(np.transpose(G),G)
 
 eigenvals, eigenvectors = np.linalg.eig(G_transpose_G)
@@ -76,22 +70,9 @@ for i in range(WorldCoords.shape[0]):
 
     predPixelCoord = np.matmul(ProjMat, WorldCoords[i,:])
     predPixelCoord = np.multiply(predPixelCoord, 1/predPixelCoord[-1])
-
+    
+    # Finally, check that our projection matrix is at least within 0.05 pixels 
+    # of correctly approximating a pixel coordinate given a point in the real world.
     assert(predPixelCoord[0] - PixelCoords[i,0] < 0.05)
     assert(predPixelCoord[1] - PixelCoords[i,1] < 0.05)
-print(WorldCoords[1,:])
-print(PixelCoords[1,:])
-x = np.matmul(ProjMat, WorldCoords[1,:])
-print(x)
-print(np.multiply(x, 1/x[-1]))
 
-print(PixelCoords[1,:])
-
-
-print(WorldCoords[2,:])
-print(PixelCoords[2,:])
-x = np.matmul(ProjMat, WorldCoords[2,:])
-print(x)
-print(np.multiply(x, 1/x[-1]))
-
-print(PixelCoords[2,:])
