@@ -27,8 +27,8 @@ ACxBC = np.cross(AC, BC)
 
 ACxBC = np.append(ACxBC, [0])
 
-# If all of the points from WorldCoords lie on the same plane, they won't work for camera 
-# calibration. This checks that all of the coordinates don't lie on the same plane.
+# If all of the points from WorldCoords lie on the same plane, they won't work for this method 
+# of camera calibration. This checks that all of the coordinates don't lie on the same plane.
 assert(np.shape(np.unique((np.matmul(WorldCoords, ACxBC))))[0] > 1)
 
 # "G" is not exactly a good variable name, so I should clarify I'm following the convention
